@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "plottosat"
+version = "0.1.0"
+description = "Refactor fork of https://github.com/Art-n-MathS/PlotToSat"
+authors = ["Finley Gibson <f.j.gibson@exeter.ac.uk>"]
+readme = "README.md"
+packages = [{include = "*", from="src"}]
+
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pandas = "^2.2.3"
+numpy = "^2.1.2"
+matplotlib = "^3.9.2"
+tqdm = "^4.66.5"
+jupyterlab = "^4.2.5"
+toml = "^0.10.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
