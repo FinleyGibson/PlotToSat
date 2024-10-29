@@ -1,3 +1,5 @@
+import pytest
+
 from datetime import date
 from plottosat import config
 from plottosat.satellites import *
@@ -16,6 +18,8 @@ class TestSentinelOne:
         assert start_date == date(2020, 1, 1)
         assert end_date == date(2020, 12, 31)
 
+        with pytest.raises(ValueError):
+            start_date, end_date = self.satellite.get_start_finish_dates(2013)
 
 class TestSentinelTwo:
 
@@ -29,4 +33,7 @@ class TestSentinelTwo:
         start_date, end_date = self.satellite.get_start_finish_dates(2020)
         assert start_date == date(2020, 1, 1)
         assert end_date == date(2020, 12, 31)
+
+        with pytest.raises(ValueError):
+            start_date, end_date = self.satellite.get_start_finish_dates(2014)
 
