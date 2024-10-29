@@ -6,6 +6,7 @@ from pathlib import Path
 from ee.featurecollection import FeatureCollection
 from datetime import datetime, date
 
+from plottosat.satellites import SentinelOne, SentinelTwo
 from plottosat.polygons import Polygons
 from plottosat.field_data import FieldData
 
@@ -28,14 +29,14 @@ class PlotToSat:
         self.sample_count = 0
         self.max_size = 0
         self.csv_df = None
-        self.year = self.set_year(year)
+        self.year = year
         self.shape_file = Path(shape_file)
         self.shape_polygons = self.load_polygons(self.shape_file)
         self.shp_pol_key_col = None
         self.filedata_file_with_ids = "fieldDataWithIdentifiers/FieldDataWithIdentifiers.csv"
         self.today_date = date.today()
-        self.sentinel1_info = config["sentinel1_info"]
-        self.sentinel2_info = config["sentinel2_info"]
+        self.sentinel_one = SentinelOne()
+        self.sentinel_two = SentinelTwo()
         self.geometry = geometry
         self.field_plot_data = None
         self.masks = {}

@@ -1,6 +1,9 @@
 from dataclasses import dataclass
-from plottosat import config
+from plottosat import config, logger
 from datetime import datetime, date
+from typing import Tuple
+
+
 
 @dataclass
 class Satellite:
@@ -11,6 +14,7 @@ class Satellite:
         config (dict): A configuration dictionary containing settings for the satellite, including
                        selected bands and retirement date.
     """
+    launch_date: date = None
     
     def __init__(self, config: dict):
         """
@@ -36,9 +40,24 @@ class Satellite:
             date: The retirement date as a date object, or the current date if no date is provided.
         """
         if date:
-            return datetime.strptime(date, "%Y-%D-%m").date    
+            return datetime.strptime(date, "%Y-%D-%m").date()
         else:
-            return datetime.now().date
+            return datetime.now().date()
+
+    def get_start_finish_dates(self, year: int) -> Tuple[date, date]:
+
+        match year:
+            case year if year == date.today().year:
+                logger.info(f"End date truncated to today's date: {date.today()}")
+                return date(year, 1, 1), date.today()
+            case year if year < self.launch_date.year:
+                raise ValueError(f"Start date before launch of satellite: {year} < {self.launch_date.year}")
+            case year if year > self.retirement_date.year:
+                raise ValueError(f"Start date beyond allowed operation date: {year} > {self.retirement_date.year}")
+            case _: 
+                logger.info(f"Valid dates selected: {date(year, 1, 1)} \t -> \t {date(year, 12, 31)}")
+                return date(year, 1, 1), date(year, 12, 31)
+
 
 
 class SentinelOne(Satellite):
@@ -53,7 +72,7 @@ class SentinelOne(Satellite):
         all_bands (list): List of all available bands for Sentinel-1.
     """
     collection = "COPERNICUS/S1_GRD"
-    launch_date = "2014-04-01"
+    launch_date = datetime.strptime("2014-04-01", "%Y-%H-%d").date()
     all_bands = ["", "", "", ""]
 
     def __init__(self):
@@ -72,7 +91,7 @@ class SentinelTwo(Satellite):
         all_bands (list): List of all available bands for Sentinel-2.
     """
     collection = "COPERNICUS/S2_SR_HARMONIZED"
-    launch_date = "2015-05-23"
+    launch_date = datetime.strptime("2015-05-23", "%Y-%H-%d").date()
     all_bands = [
         "B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B9", "B11", "B12",
         "AOT", "WVP", "SCL", "TCI_R", "TCI_G", "TCI_B", "MSK_CLDPRB", "MSK_SNWPRB",
