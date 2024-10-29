@@ -80,6 +80,6 @@ class SentinelTwo(Satellite):
         "probability", "clouds", "dark_pixels", "cloud_transform", "shadows", "cloudmask"
     ]
 
-    def __init__(self, config: dict):
+    def __init__(self):
         super().__init__(config["sentinel_two"])
         self.clouds = self.config["clouds"]
