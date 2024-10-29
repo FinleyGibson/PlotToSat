@@ -38,67 +38,11 @@ class PlotToSat:
         self.sentinel_one = SentinelOne()
         self.sentinel_two = SentinelTwo()
         self.geometry = geometry
-        self.field_plot_data = None
         self.masks = {}
 
     @staticmethod
     def load_polygon(file_path: Path) -> Polygons:
         return Polygons(file_path, config["polygons"]["key_column"])
-
-    def set_year(self, year: int) -> int:
-
-        start_date = datetime.strptime(f"{year}-01-01" "%Y-%M-%d").date()
-
-        if ( today := date.today()).year == year:
-            # limit timeframe for current year
-            logger.info(f"Sentinel-1 data truncated by today's date.")
-            end_date = today 
-        else:
-            # end of year
-            end_date = datetime.strptime(f"{year}-12-31", "%Y-%M-%d").date()
-
-        s1_launch_year = datetime(self.sentinel1_info["launch_date"], "%Y-%M-%d").year
-        s1_retirement_year = datetime(self.sentinel1_info["retirement_date"], "%Y-%M-%d").year
-
-        if year < s1_launch_year or year > s1_retirement_year:
-            logger.warning(f"Sentinel-1 data will not be exported as the yea {year} is outside its operation period.")
-            self.sentinel1_info["start_date"] = ""
-            self.sentinel1_info["end_date"] = ""
-        elif year == s1_launch_year:
-            logger.info(f"Sentinel-1 data truncated by launch date: {self.sentinel1_info["launch_date"]}.")
-            self.sentinel1_info["start_date"] = self.sentinel1_info["launch_date"]
-            self.sentinel1_info["end_date"] = end_date
-        elif year == s1_retirement_year:
-            logger.info(f"Sentinel-1 data truncated by retirement date: {self.sentinel1_info["retirement_date"]}.")
-            self.sentinel1_info["start_date"] = start_date
-            self.sentinel1_info["end_date"] = self.sentinel1_info["retirement_date"]
-        else:
-            self.sentinel1_info["start_date"] = start_date
-            self.sentinel1_info["end_date"] = end_date
-
-        s2_launch_year = datetime(self.sentinel2_info["launch_date"], "%Y-%M-%d").year
-        s2_retirement_year = datetime(self.sentinel2_info["retirement_date"], "%Y-%M-%d").year
-
-        if year < s2_launch_year or year > s1_retirement_year:
-            logger.warning(f"Sentinel-2 data will not be exported as the yea {year} is outside its operation period.")
-            self.sentinel2_info["start_date"] = ""
-            self.sentinel2_info["end_date"] = ""
-        elif year == s2_launch_year:
-            logger.info(f"Sentinel-2 data truncated by launch date: {self.sentinel1_info["launch_date"]}.")
-            self.sentinel2_info["start_date"] = self.sentinel2_info["launch_date"]
-            self.sentinel2_info["end_date"] = end_date
-        elif year == s2_retirement_year:
-            logger.info(f"Sentinel-1 data truncated by retirement date: {self.sentinel1_info["retirement_date"]}.")
-            self.sentinel2_info["start_date"] = start_date
-            self.sentinel2_info["end_date"] = self.sentinel2_info["retirement_date"]
-        else:
-            self.sentinel2_info["start_date"] = start_date
-            self.sentinel2_info["end_date"] = end_date
-
-        logger.info("Sentinel-1:", self.sentinel1_info["start_date"], "\t-->\t", self.sentinel1_info["end_date"])
-        logger.info("Sentinel-2:", self.sentinel2_info["start_date"], "\t-->\t", self.sentinel2_info["end_date"])
-
-        return year
 
     def add_field_data(self, properties):
         """Add field data to the manager.
