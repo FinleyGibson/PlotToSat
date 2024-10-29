@@ -2,8 +2,6 @@ import ee
 from datetime import datetime
 from dataclasses import dataclass
 
-class Sentinel1Config
-
 class Sentinel1:
     
     def __init__(self, 

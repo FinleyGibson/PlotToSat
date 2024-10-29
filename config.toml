@@ -5,7 +5,7 @@ selected_indices = []
  
 
 [sentinel_two]
-retirement_date = ""  # Replace with today’s date when initializing
+retirement_date = ""
 clouds = 50
 selected_band = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B9", "B11", "B12"]
 selected_indices = []
