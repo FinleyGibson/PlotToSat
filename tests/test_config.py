@@ -10,4 +10,4 @@ def test_file_exists():
 config = toml.load(CONFIG_File)
 
 def test_sentinel1():
-    assert config["sentinel1_info"] != None
+    assert config["sentinel_one"] != None

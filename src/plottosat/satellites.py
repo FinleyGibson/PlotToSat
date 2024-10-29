@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from plottosat import config
 from datetime import datetime, date
 
-
-class Satellite(dataclass):
+@dataclass
+class Satellite:
     """
     A base class for managing satellite data.
 
@@ -57,8 +57,7 @@ class SentinelOne(Satellite):
     all_bands = ["", "", "", ""]
 
     def __init__(self):
-        super().__init__(config["sentinel_one"])()
-        self.clouds = self.config["clouds"]
+        super().__init__(config["sentinel_one"])
 
 
 class SentinelTwo(Satellite):
@@ -82,4 +81,5 @@ class SentinelTwo(Satellite):
     ]
 
     def __init__(self, config: dict):
-        super().__init__(config["sentinel_two"])()
+        super().__init__(config["sentinel_two"])
+        self.clouds = self.config["clouds"]
