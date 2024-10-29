@@ -15,6 +15,7 @@ matplotlib = "^3.9.2"
 tqdm = "^4.66.5"
 jupyterlab = "^4.2.5"
 toml = "^0.10.2"
+earthengine-api = "^1.1.5"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"
