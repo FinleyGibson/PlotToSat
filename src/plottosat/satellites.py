@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from plottosat import config, logger
+from plottosat import logger
 from datetime import datetime, date
-from typing import Tuple
+from typing import Tuple, List
 
 
 @dataclass
@@ -15,6 +15,7 @@ class Satellite:
     """
 
     launch_date: date = None
+    bands: List = []
 
     def __init__(self, config: dict):
         """
@@ -23,10 +24,11 @@ class Satellite:
         Args:
             config (dict): A configuration dictionary containing satellite settings.
         """
-        self.selected_bands = config["selected_bands"]
-        self.selected_indices = config["selected_bands"]
-        self.config = config
-        self.retirement_date = self._process_retirement_date(config["retirement_date"])
+        self.selected_bands: List[str] = config["selected_bands"]
+        self.selected_indices: List[str] = config["selected_bands"]
+        self.retirement_date: date = self._process_retirement_date(
+            config["retirement_date"]
+        )
 
     @staticmethod
     def _process_retirement_date(date: str) -> date:
@@ -39,12 +41,37 @@ class Satellite:
         Returns:
             date: The retirement date as a date object, or the current date if no date is provided.
         """
-        if date:
-            return datetime.strptime(date, "%Y-%D-%m").date()
-        else:
-            return datetime.now().date()
+        try:
+            date = datetime.strptime(date, "%Y-%D-%m").date()
+            return date
+        except ValueError:
+            today = datetime.now().date()
+            if date == "":
+                logger.info(
+                    "No retirement date for {self.__class__.__name__}. Limit set to today: {today}."
+                )
+            else:
+                logger.info(
+                    "Retirement date {date} for {self.__class__.__name__} note recognised. Limit set to today: {today}."
+                )
+
+            return today
 
     def get_start_finish_dates(self, year: int) -> Tuple[date, date]:
+        """
+        Get the start and finish dates for the specified year, ensuring they align with operational constraints.
+
+        Args:
+            year (int): The year for which start and finish dates are required.
+
+        Raises:
+            ValueError: If the specified year is earlier than the satellite's launch date.
+            ValueError: If the specified year is later than the satellite's retirement date.
+
+        Returns:
+            Tuple[date, date]: A tuple containing the start date (January 1st) and the finish date
+            (December 31st or today's date if the year is the current year).
+        """
         match year:
             case year if year == date.today().year:
                 logger.info(f"End date truncated to today's date: {date.today()}")

@@ -1,4 +1,6 @@
+from plottosat import config
 from plottosat.satellites import Satellite
+from datetime import datetime
 
 
 class SentinelOne(Satellite):
@@ -15,7 +17,7 @@ class SentinelOne(Satellite):
 
     collection = "COPERNICUS/S1_GRD"
     launch_date = datetime.strptime("2014-04-01", "%Y-%H-%d").date()
-    all_bands = ["", "", "", ""]
+    bands = ["VVAsc", "VHAsc", "VVDes", "VHDes"]
 
     def __init__(self):
         super().__init__(config["sentinel_one"])
