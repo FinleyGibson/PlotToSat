@@ -1,6 +1,13 @@
 from plottosat import config
+from plottosat.utils import process_date
 from plottosat.satellites import Satellite
-from datetime import datetime
+from datetime import datetime, date
+from ee.geometry import Geometry
+from ee.featurecollection import FeatureCollection
+from ee.computedobject import ComputedObject
+from ee.imagecollection import ImageCollection
+from ee.filter import Filter
+from typing import Union
 
 
 class SentinelOne(Satellite):
@@ -28,4 +35,21 @@ class SentinelOne(Satellite):
             ),
             bands=self.bands,
             selected_bands=config["sentinel_one"]["selected_bands"],
+        )
+
+    def generate_image_collection(
+        self,
+        start_date: Union[str, date],
+        end_date: Union[str:date],
+        geometry: Geometry | ComputedObject | FeatureCollection,
+    ) -> ImageCollection:
+        start_date = process_date(start_date)
+        end_date = process_date(end_date)
+        return (
+            ImageCollection(self.collection)
+            .filterDate(start_date, end_date)
+            .filterBounds(geometry)
+            .filter(Filter.listContains("transmitterReceiverPolarisation", "VV"))
+            .filter(Filter.listContains("transmitterReceiverPolarisation", "VH"))
+            .filter(Filter.eq("instrumentMode", "IW"))
         )
