@@ -14,21 +14,19 @@ class Satellite:
                        selected bands and retirement date.
     """
 
-    launch_date: date = None
-    bands: List = []
-
-    def __init__(self, config: dict):
-        """
-        Initialize the Satellite with the given configuration.
-
-        Args:
-            config (dict): A configuration dictionary containing satellite settings.
-        """
-        self.selected_bands: List[str] = config["selected_bands"]
-        self.selected_indices: List[str] = config["selected_bands"]
-        self.retirement_date: date = self._process_retirement_date(
-            config["retirement_date"]
-        )
+    def __init__(
+        self,
+        collection: str,
+        launch_date: date,
+        retirement_date: date,
+        bands: List[str],
+        selected_bands: List[str],
+    ):
+        self.collection = collection
+        self.launch_date = launch_date
+        self.retirement_date = retirement_date
+        self.bands = bands
+        self.selected_bands = selected_bands
 
     @staticmethod
     def _process_retirement_date(date: str) -> date:

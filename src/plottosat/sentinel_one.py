@@ -20,4 +20,12 @@ class SentinelOne(Satellite):
     bands = ["VVAsc", "VHAsc", "VVDes", "VHDes"]
 
     def __init__(self):
-        super().__init__(config["sentinel_one"])
+        super().__init__(
+            collection=self.collection,
+            launch_date=self.launch_date,
+            retirement_date=self._process_retirement_date(
+                config["sentinel_one"]["retirement_date"]
+            ),
+            bands=self.bands,
+            selected_bands=config["sentinel_one"]["selected_bands"],
+        )
