@@ -1,6 +1,6 @@
 [sentinel_one]
 retirement_date = "" 
-selected_bands = []
+selected_bands = ["VVAsc", "VHAsc", "VVDes", "VHDes"]
 selected_indices = []
  
 
