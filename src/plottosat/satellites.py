@@ -1,11 +1,14 @@
-from dataclasses import dataclass
 from plottosat import logger
 from datetime import datetime, date
 from typing import Tuple, List
+from ee.imagecollection import ImageCollection
+from ee.featurecollection import FeatureCollection
+from ee.computedobject import ComputedObject
+from ee.geometry import Geometry
+from abc import ABC, abstractmethod
 
 
-@dataclass
-class Satellite:
+class Satellite(ABC):
     """
     A base class for managing satellite data.
 
@@ -27,6 +30,17 @@ class Satellite:
         self.retirement_date = retirement_date
         self.bands = bands
         self.selected_bands = selected_bands
+
+        self.ic: ImageCollection
+
+    @abstractmethod
+    def generate_image_collection(
+        self,
+        start_date: date,
+        end_date: date,
+        geometry: Geometry | ComputedObject | FeatureCollection,
+    ) -> ImageCollection:
+        pass
 
     @staticmethod
     def _process_retirement_date(date: str) -> date:
