@@ -7,7 +7,9 @@ from plottosat.utils import process_date
 
 
 class PlotToSat:
-    """A class for managing and exporting satellite data collections."""
+    """
+    A class for managing and exporting satellite data collections.
+    """
 
     def __init__(
         self,
@@ -21,4 +23,5 @@ class PlotToSat:
         self.start_date = process_date(start_date)
         self.end_date = process_date(end_date)
 
-    def run(self)
+
+    def export_collections(self)
