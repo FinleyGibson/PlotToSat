@@ -1,6 +1,6 @@
 from plottosat import logger
-from datetime import datetime, date
-from typing import Tuple, List
+from datetime import date
+from typing import Tuple, List, Optional
 from ee.imagecollection import ImageCollection
 from ee.featurecollection import FeatureCollection
 from ee.computedobject import ComputedObject
@@ -19,22 +19,18 @@ class Satellite(ABC):
 
     def __init__(
         self,
-        collection: str,
+        satellite_collection: str,
         launch_date: date,
-        retirement_date: date,
+        retirement_date: Optional[date],
         bands: List[str],
-        selected_bands: List[str],
     ):
-        self.collection = collection
+        self.satellite_collection = satellite_collection
         self.launch_date = launch_date
         self.retirement_date = retirement_date
         self.bands = bands
-        self.selected_bands = selected_bands
-
-        self.ic: ImageCollection
 
     @abstractmethod
-    def generate_image_collection(
+    def _generate_base_collection(
         self,
         start_date: date,
         end_date: date,
@@ -42,34 +38,7 @@ class Satellite(ABC):
     ) -> ImageCollection:
         pass
 
-    @staticmethod
-    def _process_retirement_date(date: str) -> date:
-        """
-        Convert the retirement date from a string to a date object.
-
-        Args:
-            date_str (str): The retirement date as a string in "YYYY-MM-DD" format.
-
-        Returns:
-            date: The retirement date as a date object, or the current date if no date is provided.
-        """
-        try:
-            date = datetime.strptime(date, "%Y-%D-%m").date()
-            return date
-        except ValueError:
-            today = datetime.now().date()
-            if date == "":
-                logger.info(
-                    "No retirement date for {self.__class__.__name__}. Limit set to today: {today}."
-                )
-            else:
-                logger.info(
-                    "Retirement date {date} for {self.__class__.__name__} note recognised. Limit set to today: {today}."
-                )
-
-            return today
-
-    def get_start_finish_dates(self, year: int) -> Tuple[date, date]:
+    def get_year_start_finish_dates(self, year: int) -> Tuple[date, date]:
         """
         Get the start and finish dates for the specified year, ensuring they align with operational constraints.
 
