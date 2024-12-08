@@ -50,7 +50,7 @@ class SentinelOne(Satellite):
         end_date = min(process_date(end_date), self.retirement_date)
         return (
             ImageCollection(self.satellite_collection)
-            .filterDate(start_date, end_date)
+            .filterDate(str(start_date), str(end_date))
             .filterBounds(geometry)
             .filter(Filter.listContains("transmitterReceiverPolarisation", "VV"))
             .filter(Filter.listContains("transmitterReceiverPolarisation", "VH"))
@@ -58,7 +58,7 @@ class SentinelOne(Satellite):
         )
 
     def get_bands(
-        self, base_collection: ImageCollection, selected_bands: List[str]
+        self, base_collection: ImageCollection, selected_bands: List[str], geometry
     ) -> Dict[str, ImageCollection]:
         # check for valid band selection
         if not np.all([band in self.bands for band in selected_bands]):
@@ -93,6 +93,7 @@ class SentinelOne(Satellite):
                         img, filter_size=3, filter_shape="circle"
                     )
                 )
+                .map(lambda image: image.clip(geometry))
             )
 
         return out_bands
