@@ -34,7 +34,7 @@ class SentinelOne(Satellite):
 
     def __init__(self):
         super().__init__(
-            collection=self.satellite_collection,
+            satellite_collection=self.satellite_collection,
             launch_date=self.launch_date,
             retirement_date=self.retirement_date,
             bands=self.bands,
