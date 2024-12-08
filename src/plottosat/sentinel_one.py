@@ -93,6 +93,6 @@ class SentinelOne(Satellite):
                         img, filter_size=3, filter_shape="circle"
                     )
                 )
-            ).rename(band_name)
+            )
 
         return out_bands
